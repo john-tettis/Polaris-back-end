@@ -22,6 +22,7 @@ app.use(function (req, res, next) {
   });
 //generic error handler 
 app.use((error,req,res,next)=>{
+  console.log(error)
     return res.json({error})
 
   })

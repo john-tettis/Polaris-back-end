@@ -36,16 +36,16 @@ const BCRYPT_WORK_FACTOR=12
 router.post('/login', async (req,res,next)=>{
     try {
         const {password, email} = req.body;
-        const {rows}= await db.query(
+        const result= await db.query(
           `SELECT password FROM users WHERE email = $1`,[email]);
-        
+        //return if invalid email
+        if(result.rowCount===0) throw new ExpressError('Invalid email or password',400)
         //verify token and user existence
         const hashWord= rows[0].password
         const match = await bcrypt.compare(password,hashWord)
-        console.log({match})
-        if(!hashWord || !match) throw new ExpressError('Invalid email or password',400)
+        if(!match) throw new ExpressError('Invalid email or password',400)
+        //if passwords match, return signed token object
         const token = await JWT.getToken({email})
-        console.log(token)
         return res.send({token});
       } catch (err) {
         return next(err)
