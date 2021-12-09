@@ -3,6 +3,7 @@ const ExpressError = require('../ExpressError')
 const router = new express.Router();
 const db = require('../db')
 const createQuery = require('../Helpers/createQuery')
+const isLoggedIn = require('../MiddleWare/isLoggedIn')
 
 //retrieve id, username, first name, last name, 
 //email and default location on specified user
@@ -17,6 +18,7 @@ router.get('/:id', async (req,res,next)=>{
     }
 })
 //edit user in database by id
+router.use(isLoggedIn)
 router.patch('/:id', async(req,res,next)=>{
     try {
         let id = req.params.id;
